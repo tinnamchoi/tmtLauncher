@@ -12,8 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.tinnamchoi.tmtlauncher.ui.theme.TmtLauncherTheme
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.FileObserver
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -72,17 +74,31 @@ fun TmtLauncher(context: Context, modifier: Modifier = Modifier) {
 
     DisposableEffect(Unit) {
         val file = getPublicConfigFile(context)
-        val observer = object : FileObserver(file, CLOSE_WRITE) {
+        val observer = object : FileObserver(file, FileObserver.CLOSE_WRITE) {
             override fun onEvent(event: Int, path: String?) {
-                if (event == CLOSE_WRITE) {
-                    launcherItems = parseConfig(context)
-                }
+                launcherItems = parseConfig(context)
             }
         }
         observer.startWatching()
 
+        val packageReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                launcherItems = parseConfig(context!!)
+            }
+        }
+
+        val filter = IntentFilter().apply {
+            addAction(Intent.ACTION_PACKAGE_ADDED)
+            addAction(Intent.ACTION_PACKAGE_REMOVED)
+            addAction(Intent.ACTION_PACKAGE_CHANGED)
+            addDataScheme("package")
+        }
+
+        context.registerReceiver(packageReceiver, filter)
+
         onDispose {
             observer.stopWatching()
+            context.unregisterReceiver(packageReceiver)
         }
     }
 
