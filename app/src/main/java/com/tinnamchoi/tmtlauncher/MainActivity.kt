@@ -14,6 +14,7 @@ import com.tinnamchoi.tmtlauncher.ui.theme.TmtLauncherTheme
 
 import android.content.Context
 import android.content.Intent
+import android.os.FileObserver
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -28,6 +29,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.compose.foundation.lazy.items
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 
 data class AppInfo(
     val label: String, val packageName: String, val icon: androidx.compose.ui.graphics.ImageBitmap
@@ -62,8 +68,26 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun TmtLauncher(context: Context, modifier: Modifier = Modifier) {
+    var launcherItems by remember { mutableStateOf(parseConfig(context)) }
+
+    DisposableEffect(Unit) {
+        val file = getPublicConfigFile(context)
+        val observer = object : FileObserver(file, CLOSE_WRITE) {
+            override fun onEvent(event: Int, path: String?) {
+                if (event == CLOSE_WRITE) {
+                    launcherItems = parseConfig(context)
+                }
+            }
+        }
+        observer.startWatching()
+
+        onDispose {
+            observer.stopWatching()
+        }
+    }
+
     LazyColumn(modifier = modifier) {
-        items(items = parseConfig(context), key = { item ->
+        items(items = launcherItems, key = { item ->
             when (item) {
                 is LauncherItem.App -> "${item.appInfo.label}_${item.appInfo.packageName}"
                 is LauncherItem.Title -> item.text
