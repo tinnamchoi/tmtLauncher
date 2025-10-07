@@ -135,7 +135,7 @@ fun parseConfig(context: Context): List<LauncherItem> {
 
     groups.add(
         GroupInfo(
-            "Miscellaneous", apps.values.flatten().sortedBy { it.label }.toMutableList()
+            "Miscellaneous", apps.values.flatten().toMutableList()
         )
     )
 
@@ -149,7 +149,7 @@ fun parseConfig(context: Context): List<LauncherItem> {
         launcherItems.add(LauncherItem.Spacer(32, "spacer_top_${group.title}"))
         launcherItems.add(LauncherItem.Title(group.title))
         launcherItems.add(LauncherItem.Spacer(20, "spacer_mid_${group.title}"))
-        launcherItems.addAll(group.apps.map { LauncherItem.App(it) })
+        launcherItems.addAll(group.apps.sortedBy { it.label }.map { LauncherItem.App(it) }.toList())
         launcherItems.add(LauncherItem.Spacer(24, "spacer_bot_${group.title}"))
         launcherItems.add(LauncherItem.Divider("divider_bot_${group.title}"))
     }
