@@ -30,9 +30,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.compose.foundation.lazy.items
 
 data class AppInfo(
-    val label: String,
-    val packageName: String,
-    val icon: androidx.compose.ui.graphics.ImageBitmap
+    val label: String, val packageName: String, val icon: androidx.compose.ui.graphics.ImageBitmap
 )
 
 data class GroupInfo(
@@ -54,8 +52,7 @@ class MainActivity : ComponentActivity() {
             TmtLauncherTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     TmtLauncher(
-                        context = this@MainActivity,
-                        modifier = Modifier.padding(innerPadding)
+                        context = this@MainActivity, modifier = Modifier.padding(innerPadding)
                     )
                 }
             }
