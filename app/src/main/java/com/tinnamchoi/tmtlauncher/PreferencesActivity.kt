@@ -84,13 +84,13 @@ fun Preferences(modifier: Modifier = Modifier) {
         )
 
         val codeExample = """
-            # Tools
-            Calculator
-            Maps
-
-            # Media
+            # Quick Access
+            Phone
             Camera
-            Photos
+
+            # Tools
+            Calendar
+            Maps
         """.trimIndent()
 
         Surface(
