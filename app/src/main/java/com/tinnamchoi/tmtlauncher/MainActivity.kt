@@ -135,15 +135,19 @@ fun parseConfig(context: Context): List<LauncherItem> {
 
     val groups = mutableListOf<GroupInfo>()
 
-    getPublicConfigFile(context).forEachLine { line ->
-        if (line.startsWith("# ")) {
-            groups.add(GroupInfo(line.substring(2), mutableListOf()))
-        } else {
-            val trimmed = line.trim()
-            apps[trimmed]?.let { appInfos ->
-                if (groups.isNotEmpty()) {
-                    groups.last().apps.addAll(appInfos)
-                    apps.remove(trimmed)
+    val configFile = getPublicConfigFile(context)
+
+    if (configFile.exists()) {
+        configFile.forEachLine { line ->
+            if (line.startsWith("# ")) {
+                groups.add(GroupInfo(line.substring(2), mutableListOf()))
+            } else {
+                val trimmed = line.trim()
+                apps[trimmed]?.let { appInfos ->
+                    if (groups.isNotEmpty()) {
+                        groups.last().apps.addAll(appInfos)
+                        apps.remove(trimmed)
+                    }
                 }
             }
         }
