@@ -1,0 +1,9 @@
+Minimalist Android Launcher
+
+Features:
+* Simple one-dimensional list
+* Labelled groups
+* Lexicographical sorting
+
+made by Timothy Choi
+https://tinnamchoi.github.io/
