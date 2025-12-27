@@ -45,6 +45,10 @@ You should have received a copy of the GNU General Public License along with thi
             android:taskAffinity=""
             android:theme="@style/Theme.TmtLauncher">
             <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
