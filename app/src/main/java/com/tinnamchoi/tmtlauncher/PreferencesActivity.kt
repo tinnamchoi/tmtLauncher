@@ -24,8 +24,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -77,6 +80,7 @@ fun getPublicConfigFile(context: Context): File {
 fun Preferences(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     val configFile = remember { getPublicConfigFile(context) }
+    val scrollState = rememberScrollState()
 
     var text by remember { mutableStateOf("") }
     LaunchedEffect(Unit) {
@@ -86,7 +90,9 @@ fun Preferences(modifier: Modifier = Modifier) {
     }
 
     Column(
-        modifier = modifier.padding(16.dp),
+        modifier = modifier
+            .padding(16.dp)
+            .verticalScroll(scrollState),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Text(
@@ -126,8 +132,8 @@ fun Preferences(modifier: Modifier = Modifier) {
             onValueChange = { newText -> text = newText },
             label = { Text("Configuration") },
             modifier = Modifier
-                .weight(1f)
                 .fillMaxWidth()
+                .heightIn(min = 200.dp)
         )
 
         Button(
