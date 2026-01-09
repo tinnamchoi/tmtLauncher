@@ -47,6 +47,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import java.util.Locale
 
 data class AppInfo(
     val label: String, val packageName: String, val icon: androidx.compose.ui.graphics.ImageBitmap
@@ -132,6 +133,10 @@ fun TmtLauncher(context: Context, modifier: Modifier = Modifier) {
     }
 }
 
+private fun String.normalizeLabel(): String {
+    return this.replace(Regex("[\\s\\p{Z}]+"), " ").trim().lowercase(Locale.getDefault())
+}
+
 fun parseConfig(context: Context): List<LauncherItem> {
     val pm = context.packageManager
     val apps = pm.queryIntentActivities(
@@ -142,7 +147,7 @@ fun parseConfig(context: Context): List<LauncherItem> {
             packageName = resolveInfo.activityInfo.packageName,
             icon = resolveInfo.loadIcon(pm).toBitmap().asImageBitmap()
         )
-    }.groupBy({ app -> app.label }, { it }).toMutableMap()
+    }.groupBy({ it.label.normalizeLabel() }, { it }).toMutableMap()
 
     val groups = mutableListOf<GroupInfo>()
 
@@ -151,13 +156,15 @@ fun parseConfig(context: Context): List<LauncherItem> {
     if (configFile.exists()) {
         configFile.forEachLine { line ->
             if (line.startsWith("# ")) {
-                groups.add(GroupInfo(line.substring(2), mutableListOf()))
+                groups.add(GroupInfo(line.substring(2).trim(), mutableListOf()))
             } else {
-                val trimmed = line.trim()
-                apps[trimmed]?.let { appInfos ->
-                    if (groups.isNotEmpty()) {
-                        groups.last().apps.addAll(appInfos)
-                        apps.remove(trimmed)
+                val normalized = line.normalizeLabel()
+                if (normalized.isNotEmpty()) {
+                    apps[normalized]?.let { appInfos ->
+                        if (groups.isNotEmpty()) {
+                            groups.last().apps.addAll(appInfos)
+                            apps.remove(normalized)
+                        }
                     }
                 }
             }
