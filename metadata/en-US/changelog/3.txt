@@ -1,0 +1,3 @@
+* Reduce string parsing strictness
+  * Whitespaces (NBSPs, tabs, etc.) are normalized to a singular space
+  * Case-insensitivity

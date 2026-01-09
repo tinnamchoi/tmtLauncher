@@ -1,0 +1,3 @@
+* Launcher item for easy access to preferences
+* "Test launcher" and "Set as default" buttons in preferences
+* Dynamic preferences textbox sizing for people with large font sizes
