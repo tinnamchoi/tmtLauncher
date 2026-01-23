@@ -1,0 +1,1 @@
+* reduce minSdk to 21 to support devices as old as Android 5
