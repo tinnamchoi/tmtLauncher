@@ -86,7 +86,8 @@ fun TmtLauncher(context: Context, modifier: Modifier = Modifier) {
 
     DisposableEffect(Unit) {
         val file = getPublicConfigFile(context)
-        val observer = object : FileObserver(file, FileObserver.CLOSE_WRITE) {
+        @Suppress("DEPRECATION")
+        val observer = object : FileObserver(file.absolutePath, FileObserver.CLOSE_WRITE) {
             override fun onEvent(event: Int, path: String?) {
                 launcherItems = parseConfig(context)
             }

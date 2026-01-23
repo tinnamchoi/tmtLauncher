@@ -21,7 +21,7 @@ android {
 
     defaultConfig {
         applicationId = "com.tinnamchoi.tmtlauncher"
-        minSdk = 33
+        minSdk = 21
         targetSdk = 36
         versionCode = 3
         versionName = "1.2.0"
